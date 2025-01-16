@@ -1,0 +1,334 @@
+<script>
+    /*
+    
+    Instruções
+    Escreva um programa que implemente o jogo “Qual é o filme?”.
+    Nesse  jogo, o jogador 1 deve digitar o nome de um filme e, 
+    em seguida, 5 pistas descritivas sobre o filme. 
+    Depois, o jogador 2 tem cinco chances para tentar adivinhar o 
+    nome do filme. 
+    Inicialmente, somente a primeira pista é mostrada para o jogador 2,
+    mas sempre que ele errar o nome do filme, 
+    uma nova pista é exibida na tela e o jogador 
+    pode tentar adivinhar o nome do filme novamente. 
+    
+    */
+
+    titulo()//cabeçalho com instruções do jogo
+
+    function jogo(re) {
+
+        introducaoJogo(re);
+
+        let jogadores = inicioDoJogo()//cria uma lista com o nome dos jogadores
+
+        //implementação futura com rodadas opção do jogador 1 e 2.
+
+        //usuario escolhe o filme para adivinhar
+        let filmeEscolhido = escolherFilme(jogadores[0], jogadores[1])
+
+        //usuario escreve as pistas para adivinhar
+        let advinharPistas = lerPistas()
+
+        //apresente e recebe os dados de dicas e chute , compara se a resposta esta correta e avisa se o jogador 2 venceu ou nao
+        let numeroDetentativas = comecarTentarAdvinhar(advinharPistas, filmeEscolhido, jogador[1])
+
+        if (numeroDetentativas != 0) {
+            voceVenceu(numeroDetentativas, jogadores[0], jogadores[1])
+
+        } else { vocePerdeu(jogadores[0], jogadores[1], filmeEscolhido) }
+
+
+
+        sairDoJogo()//sai do jogo
+    }
+
+    function comecarTentarAdvinhar(advinharPistas, filmeEscolhido, jogador2) {
+        console.log(`
+    *************************************************************
+
+    Agora é com o ${jogadores[1]} vamos começar a tentar advinhar:
+    
+    **************************************************************
+    `)
+        let tentativaResposta = ""
+        let compararFilmes = 0
+        for (let i = 0; i < advinharPistas.length; i++) {
+            console.log(`Rodada ${i + 1}`);
+            tentativaResposta = mostrarPistas(advinharPistas, i + 1)
+            compararFilmes = compararFilme(tentativaResposta, filmeEscolhido)
+
+            if (compararFilmes === 0) {
+                if (i == 3) {
+                    alert("Cuidado essa é a ultima tentativa")
+                    console.log("Cuidado essa é a ultima tentativa")
+                }
+                alert("Voce errou")
+                console.log(`
+        ****************************************        
+        
+        Essa é sua ${i + 1} tentativa(s)
+        Sua tentativa foi: ${tentativaResposta}
+         mas não é bem isso vamos tentar de novo?
+
+        *****************************************
+
+         `)
+            }
+            else if (compararFilmes == 1) {
+                alert(`Parabens voce acertou o filme ${filmeEscolhido} com ${i + 1} tentativas`)
+                console.log(`
+
+                **********************************************
+
+                Parabens voce acertou o filme ${filmeEscolhido} 
+                com ${i + 1} tentativas
+                
+                **********************************************
+                
+                `)
+                return compararFilmes = i + 1
+
+            } else { alert(`erro inesperado`) }
+
+        }
+
+    }
+
+    //resultado de Vitoria
+    function voceVenceu(numeroDetentativas, jogador1, jogador2) {
+        let pontos = 0
+        switch (numeroDetentativas) {
+            case 1: pontos = 100
+                break
+
+            case 2: pontos = 60
+                break
+
+            case 3: pontos = 40
+                break
+
+            case 4: pontos = 20
+                break
+
+            case 5: pontos = 10
+                break
+
+            default: alert("ERRRO")
+                break
+        }
+
+        alert(`
+Dessa vez o ${jogador2} conseguiu advinhar o Filme Secreto.
+Quem sabe na proxima ${jogador1}?
+ 
+ `)
+
+        console.log(
+            `
+        **********************************************
+
+        Parabens voce venceu com ${numeroDetentativas} 
+        tentativas e fez ${pontos}pontos
+
+        **********************************************
+        `
+        )
+
+        alert("FIM?")
+        jogo("re")
+
+    }
+    //Resultado de Derrota
+    function vocePerdeu(jogador1, jogador2, filmeEscolhido) {
+        alert("Voce perdeu!!")
+
+        console.log(
+            `
+    Parabéns ${jogador1} você levou a melhor nessa!
+    ${jogador2} não desanime!Na próxima  você vai descobrir o Filme secreto
+    
+    O filme secreto era.......${filmeEscolhido}!!! 
+
+    ` )
+        alert("FIM?")
+        jogo("re")
+
+    }
+
+    //compara se o filme do chute e o filme para adivinhar sao iguais
+    function compararFilme(filmeResposta, filmeParaAdvinhar) {
+        if (filmeResposta === filmeParaAdvinhar) {
+            return 1
+        } else return 0
+
+    }
+    //criar a lista inicial de dicas com input do usuario
+    function lerPistas() {
+        let numeroDeDicas = 5
+        let dicas = []
+        for (let i = 0; i < numeroDeDicas; i++) {
+            dica = prompt(`Dica nº${i + 1}: `)
+            dicas.push(dica)
+        }
+        return dicas
+    }
+
+
+    //imprime a lista de dicas de acordo com a rodada e recebe o palpite do jogador 2
+    function mostrarPistas(PistasOriginais, num) {
+        let tentativaPistas = armazenarPistas(PistasOriginais, num)
+
+        tentativaPistas.forEach((elemento, indice) => {
+            alert(`Dica: ${indice + 1}: ${elemento}`)
+            console.log(`Dica: ${indice + 1}: ${elemento}`);
+        });
+
+
+        let tentativaResposta = prompt("Qual o filme? ")
+        return tentativaResposta
+    }
+
+
+    //cria uma lista com as dicas a serem expostas na rodada
+    function armazenarPistas(PistasOriginais, num) {
+        let tentativaPista = []
+        for (let i = 0; i < num; i++) {
+
+            tentativaPista.push(PistasOriginais[i])
+        }
+        //console.log(tentativaPista)
+        return tentativaPista
+    }
+
+    //pede para o usuario abrir o prompt do navegador e da as instruções iniciais
+    function titulo() {
+        alert(`Aperte CTRL + SHIFT + I para abrir o terminal`)
+        console.log(`
+
+░█▀▀█ █──█ █▀▀█ █── 　 █▀▀█ 　 █▀▀ ─▀─ █── █▀▄▀█ █▀▀ ▀█ 
+░█─░█ █──█ █▄▄█ █── 　 █──█ 　 █▀▀ ▀█▀ █── █─▀─█ █▀▀ █▀ 
+─▀▀█▄ ─▀▀▀ ▀──▀ ▀▀▀ 　 ▀▀▀▀ 　 ▀── ▀▀▀ ▀▀▀ ▀───▀ ▀▀▀ ▄─
+
+`)
+
+        console.log(`
+
+******************************************************
+
+Instruções:
+
+Nesse  jogo, o jogador 1 deve digitar o nome de um filme e, 
+em seguida, 5 pistas descritivas sobre o filme. 
+Depois, o jogador 2 tem cinco chances para tentar adivinhar o 
+nome do filme. 
+Inicialmente, somente a primeira pista é mostrada para o jogador 2,
+mas sempre que ele errar o nome do filme, 
+uma nova pista é exibida na tela.
+
+*******************************************************
+
+A pontuação do jogador 2 depende do número de pistas
+que ele utilizou para descobrir o nome do filme: 
+
+1 pista: +100.
+2pistas: +60.  
+3 pistas: +40.  
+4 pistas: +20.  
+5 pistas: +10.  
+
+******************************************************
+
+Boa sorte !
+
+`)
+    }
+
+
+    //função de iniciar jogo, reaproveitar para sistema de rodadas
+    function introducaoJogo(re) {
+        const mensagemDerro = "Opçao inválida selecione uma opção válida"
+        let inicio
+        do {
+            inicio = prompt(`Deseja ${re}iniciar o jogo? S/N`)
+            if (inicio === "N") {
+                sairDoJogo()
+
+            } else if (inicio === "S") {
+
+
+            } else {
+                console.log(`${mensagemDerro}`)
+
+            }
+
+        } while (inicio !== "S" && inicio !== "N")
+    }
+
+    //cria a lista com o nome dos jogadores
+    function inicioDoJogo() {
+        let jogadores = []
+
+        console.log(`Iniciando Jogo: Qual é o Filme....
+Vamos escolher os jogadores 1 e 2 da partida`
+        )
+
+
+        jogadores[0] = prompt("Jogador 1 qual o seu nome?")
+        console.log(`jogador1: ${jogadores[0]}.`)
+        jogadores[1] = prompt("Jogador 2 qual o seu nome?")
+        console.log(`jogador2: ${jogadores[1]}.`)
+
+        console.log(` 
+Prepare-se ${jogadores[0]} você irá 
+escolher um filme com 5 dicas para o 
+${jogadores[1]} adivinhar. 
+Preparados?
+`)
+        return jogadores
+    }
+
+
+    //escolher um filme para adivinhar
+    function escolherFilme(jogador1, jogador2) {
+        console.log(`${jogador1} escolhendo um Filme....`)
+        const filmeEscolhido = prompt(`Escolha o filme, não deixe o ${jogador2} seu colega ver`)
+        console.log(`
+    ******************************************************************
+
+    Muito bem ${jogador1} agora escolha as 5 dicas para esse filme....
+    
+    ******************************************************************
+    `)
+
+        //console.log(filmeEscolhido)
+        /* 
+        vamos implementar um loop com mensagem de erro para filmes "vazios"
+        if (filmeEscolhido == "" ){
+            alert("ERRO")
+        } */
+        return filmeEscolhido
+
+    }
+
+
+
+    function sairDoJogo() {
+        console.log(`
+    
+░█▀▀▀█ █▀▀█ ─▀─ █▀▀▄ █▀▀▄ █▀▀█ 　 █▀▀▄ █▀▀█ 　 ───░█ █▀▀█ █▀▀▀ █▀▀█ 
+─▀▀▀▄▄ █▄▄█ ▀█▀ █──█ █──█ █──█ 　 █──█ █──█ 　 ─▄─░█ █──█ █─▀█ █──█ 
+░█▄▄▄█ ▀──▀ ▀▀▀ ▀──▀ ▀▀▀─ ▀▀▀▀ 　 ▀▀▀─ ▀▀▀▀ 　 ░█▄▄█ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀    
+    
+    `)
+        throw new Error("Erro intencional. Programa encerrado.");
+
+    }
+
+
+    setTimeout(function () {
+        jogo("");
+
+    }, 100);
+
+</script>
